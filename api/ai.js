@@ -11,15 +11,4 @@ export default async function handler(req, res) {
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
-      })
-    }
-  );
-
-  const data = await response.json();
-
-  res.json({
-    reply: data.candidates?.[0]?.content?.parts?.[0]?.text || "No response"
-  });
-}
+      body: 
