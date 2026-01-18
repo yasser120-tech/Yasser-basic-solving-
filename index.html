@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Yasser Tech Calculator PRO</title>
+
+<style>
+:root{
+  --bg:#1b140d; --btn:#3a2f23; --op:#6b4a1a; --text:#f5e6d3;
+  --equal:#b6d68a; --frame:#8a6e53;
+}
+.light{
+  --bg:#f2f2f2; --btn:#e0e0e0; --op:#ffb74d; --text:#111;
+  --equal:#81c784; --frame:#c2a178;
+}
+*{box-sizing:border-box;font-family:Segoe UI, sans-serif;}
+body{
+  margin:0;height:100vh;display:flex;justify-content:center;align-items:center;
+  background:var(--bg);color:var(--text);overflow:hidden;touch-action:none;
+}
+.logo-bg{
+  position:absolute;width:300px;height:300px;
+  background:url("https://files.catbox.moe/gqx5dp.jpg") center/contain no-repeat;
+  opacity:.15;animation:spin 40s linear infinite;
+}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.calc-frame{
+  border:6px solid var(--frame);border-radius:32px;padding:15px;
+  box-shadow:0 8px 30px rgba(0,0,0,.6), inset 0 0 15px rgba(255,255,255,.1);
+  width:400px;min-height:600px;max-width:400px;
+}
+.header{display:flex;justify-content:space-between;align-items:center}
+.display{
+  width:100%;height:90px;margin-top:8px;
+  background:rgba(0,0,0,.25);text-align:right;font-size:36px;
+  padding:10px;border:none;border-radius:16px;color:var(--text);
+}
+.buttons{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:12px
+}
+button{
+  height:65px;border-radius:50%;border:none;font-size:20px;
+  background:var(--btn);color:var(--text);cursor:pointer;
+}
+.op{background:var(--op)}
+.equal{background:var(--equal);color:#000}
+.wide{grid-column:span 2}
+
+.ai-box{
+  margin-top:10px;background:rgba(0,0,0,.2);
+  padding:8px;border-radius:14px
+}
+.ai-box input{
+  width:100%;padding:10px;border:none;border-radius:12px;
+  background:rgba(0,0,0,.25);color:var(--text)
+}
+.ai-box button{
+  width:100%;margin-top:6px;padding:10px;border:none;border-radius:14px;
+  background:linear-gradient(45deg,#00ffd5,#81c784);
+  font-weight:bold
+}
+#aiResult{
+  margin-top:6px;min-height:60px;padding:8px;
+  background:rgba(0,0,0,.25);border-radius:10px;font-size:13px
+}
+footer{text-align:center;margin-top:8px;font-size:12px;opacity:.6}
+</style>
+</head>
+
+<body>
+<div class="logo-bg"></div>
+
+<div class="calc-frame">
+  <div class="header">
+    <h3>Yasser Tech Calculator PRO</h3>
+    <div onclick="toggleMode()">🌙/☀️</div>
+  </div>
+
+  <input id="display" class="display" readonly value="0">
+
+  <!-- AI SMART -->
+  <div class="ai-box">
+    <input id="aiInput" placeholder="🤖 Uliza AI (mf: Solve 2x+5=15)">
+    <button onclick="askAI()">🤖 Ask AI</button>
+    <div id="aiResult"></div>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="buttons">
+    <button class="op" onclick="press(clearAll)">AC</button>
+    <button class="op" onclick="press(()=>append('('))">(</button>
+    <button class="op" onclick="press(()=>append(')'))">)</button>
+    <button class="op" onclick="press(()=>append('%'))">%</button>
+    <button class="op" onclick="press(()=>append('/'))">÷</button>
+
+    <button onclick="press(()=>append('7'))">7</button>
+    <button onclick="press(()=>append('8'))">8</button>
+    <button onclick="press(()=>append('9'))">9</button>
+    <button class="op" onclick="press(()=>append('*'))">×</button>
+    <button class="op" onclick="press(sin)">sin</button>
+
+    <button onclick="press(()=>append('4'))">4</button>
+    <button onclick="press(()=>append('5'))">5</button>
+    <button onclick="press(()=>append('6'))">6</button>
+    <button class="op" onclick="press(()=>append('-'))">−</button>
+    <button class="op" onclick="press(cos)">cos</button>
+
+    <button onclick="press(()=>append('1'))">1</button>
+    <button onclick="press(()=>append('2'))">2</button>
+    <button onclick="press(()=>append('3'))">3</button>
+    <button class="op" onclick="press(()=>append('+'))">+</button>
+    <button class="op" onclick="press(tan)">tan</button>
+
+    <button class="wide" onclick="press(()=>append('0'))">0</button>
+    <button onclick="press(()=>append('.'))">.</button>
+    <button class="equal" onclick="press(calculate)">=</button>
+    <button class="op" onclick="press(log)">log</button>
+    <button class="op" onclick="press(ln)">ln</button>
+  </div>
+
+  <footer>© 2026 Yasser Tech Solutions</footer>
+</div>
+
+<script>
+const d=document.getElementById("display");
+
+function press(fn){fn()}
+function append(v){d.value=d.value==="0"?v:d.value+v}
+function clearAll(){d.value="0"}
+function calculate(){try{d.value=eval(d.value)}catch{d.value="Error"}}
+function sin(){d.value=Math.sin(eval(d.value))}
+function cos(){d.value=Math.cos(eval(d.value))}
+function tan(){d.value=Math.tan(eval(d.value))}
+function log(){d.value=Math.log10(eval(d.value))}
+function ln(){d.value=Math.log(eval(d.value))}
+function toggleMode(){document.body.classList.toggle("light")}
+
+async function askAI(){
+  const q=document.getElementById("aiInput").value;
+  const r=document.getElementById("aiResult");
+  if(!q){r.innerText="⚠️ Andika swali";return}
+  r.innerText="🤖 AI inafikiria...";
+  try{
+    const res=await fetch("/api/ai",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({ prompt:q })
+    });
+    const data=await res.json();
+    r.innerText=data.reply || "Hakuna jibu";
+  }catch{
+    r.innerText="❌ AI haipatikani (hakikisha internet ipo)";
+  }
+}
+</script>
+</body>
+</html>
